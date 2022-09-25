@@ -47,7 +47,7 @@ That being said, the bash version of aurtool is considered deprecated (due to ba
 - ``` aurtool -S packagename ```
 
 
-- ***-SS*** : install package(s) from AUR by-name. Supports multiple operands.
+- ***-SS*** : install package(s) from AUR by-name.
 
 - ``` aurtool -SS packagename ```
 
