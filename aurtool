@@ -149,9 +149,9 @@ if [ "$OP" = -SS ]; then
       NCHECKALL="0"
   fi
   if [ $GOAHEAD = "1" ]; then
-    IFS=$'\n'
-    for b in ${@:2}; do
-      unset IFS
+    declare -a LINEPUN
+    LINEPUN=("${@:2}")
+    for b in ${LINEPUN[@]}; do
       cd $HOME
       mkdir .aurtool
       cd .aurtool
