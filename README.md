@@ -28,9 +28,9 @@ That being said, the bash version of aurtool is considered deprecated (due to ba
 
 - clone this repository:
 
-- ``` git clone https://github.com/m1ndflay3r/aurtool ```
+- ``` git clone https://github.com/m1ndflay3r/aurtool-zsh ```
 
-- ``` cd aurtool ```
+- ``` cd aurtool-zsh ```
 
 
 <h5>step 2</h5>
