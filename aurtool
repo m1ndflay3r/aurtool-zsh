@@ -150,8 +150,8 @@ if [ "$OP" = -SS ]; then
   fi
   if [ $GOAHEAD = "1" ]; then
     declare -a LINEPUN
-    LINEPUN=($={@:2})
-    for b in ${LINEPUN[@]}; do
+    LINEPUN=($(echo ${@:2}))
+    for b in $=LINEPUN; do
       cd $HOME
       mkdir .aurtool
       cd .aurtool
