@@ -1,0 +1,379 @@
+#!/usr/bin/env zsh
+
+#
+#  Aurtool V2.0-alpha.1-zsh
+#
+#  Maintainer: Eris Nihila (M1ndFlay3r)
+#              sp0t1fyfr33tr1alabus3@outlook.com
+#
+# This software comes with absolutely NO WARRANTY, expressed or implied. Any and all use of this software is entirely
+# at your own risk. By using this software you agree to release and forever discharge the developer from all manner of actions,
+# cause of action, debts, accounts, bonds, contracts, claims and demands for or by any reason of damage, loss (including data loss)
+# or injury to person or property that has been or may be sustained as a result of your usage of this software.
+#
+# This software is shipped under the GNU General Public License and is provided "as is", with no explicit or implied expectation or
+# obligation to provide support, development, or otherwise unspecified services of any kind. Furthermore, the developer reserves the
+# right to cease development at any time for any reason, with no obligation to provide reason(s) for cessation.
+#
+#
+
+
+### initialization steps
+###
+OP="$@[1]"
+OPINPUT="${@:2}"
+USR=$(whoami)
+STARTDIR=$(pwd)
+EXECDIR=$(dirname ${BASH_SOURCE[0]-$0})
+AURTOOLDIR="$STARTDIR/$EXECDIR"
+PATH=$AURTOOLDIR:$PATH
+LIBDEFLOC=/usr/include/libaurtool
+if [ -f "$LIBDEFLOC" ]; then
+  if head -1 /usr/include/libaurtool | grep bash &> /dev/null; then
+    tput setaf 5
+    echo 'Warning: libaurtool detected, but installed version is incompatible with aurtool (detected bash, but we are zsh!)'
+    echo 'Attempting to use local version...'
+    tput sgr 0
+    source $AURTOOLDIR/resources/libaurtool
+  else
+    source /usr/include/libaurtool
+  fi
+else
+  source $AURTOOLDIR/resources/libaurtool
+fi
+GOAHEAD="0"
+if [ -z "$NCHECKALL" ]; then
+  NCHECKALL="0"
+fi
+###
+
+
+### checks for invalid run conditions
+###
+if [ "$USR" = root ]; then
+  ctext red std "Error: aurtool cannot be run as root!"
+  exit 13
+fi
+
+declare -a VALID
+VALID+=(
+    "-S"
+    "-Sy"
+    "-Syu"
+    "-Ss"
+    "--help"
+    "-Syyu"
+    "-Sss"
+    "--version"
+    "-SS"
+    "-R"
+    "--flags"
+)
+
+if [ ! -z "$OP" ]; then
+  if ! isvalidoperation "$1" ${VALID[@]}; then
+    ctext red nnl "Error: "
+    ctext magenta nnl "$1"
+    ctext red std ": Invalid command!"
+    ctext yellow std "Do aurtool --help for help page"
+    exit 22
+  fi
+else
+  ctext red std "Error: aurtool requires input!"
+  ctext yellow std "Do aurtool --help for help page"
+  exit 22
+fi
+
+if ! which package-query &> /dev/null; then
+  if [ -z "$PKGQUERYINS" ]; then
+    PKGQUERYINS="0"
+  fi
+  if [ ! $PKGQUERYINS -eq 1 ]; then
+    ctext magenta std "Error: package-query not found in PATH!"
+    if ! isyes "$(ctext yellow nnl "Install it now? (Y/n)")"; then
+      exit 65
+    else
+      PKGQUERYINS="1" NCHECKALL="1" aurtool -SS package-query
+    fi
+  fi
+fi
+
+OPERROR() {
+  if [ -z "$OPINPUT" ]; then
+    ctext red std "Error: $OP requires additional input."
+    ctext yellow std "Do aurtool --help for help page"
+    exit 22
+  fi
+}
+###
+
+
+### Script functionality begins here.
+### Yes, I wrote the functions as if statements.
+### No, it does not have any effects on functionality.
+### No, I don't know why I did that. I was high. Get off my back.
+###
+if [ "$OP" = -Sss ]; then
+  OPERROR
+  package-query -A -s ${@:2}
+fi
+
+if [ "$OP" = -Ss ]; then
+  OPERROR
+  ctext yellow std "---------"
+  ctext yellow std " Non-AUR "
+  ctext yellow std "---------"
+  pacsearch ${@:2}
+  ctext yellow std "---------"
+  ctext yellow std "   AUR   "
+  ctext yellow std "---------"
+  package-query -A -s ${@:2}
+fi
+
+if [ "$OP" = -SS ]; then
+  OPERROR
+  if [ $NCHECKALL = 0 ]; then
+    echo " "
+    for dD in ${@:2}; do
+      ctext blue nnl " $dD"
+    done
+    echo " "
+    echo " "
+    if isyes "$(ctext yellow nnl "Install these packages? (Y/n)")"; then
+      GOAHEAD="1"
+    else
+      GOAHEAD="0"
+    fi
+  else
+      GOAHEAD="1"
+      NCHECKALL="0"
+  fi
+  if [ $GOAHEAD = "1" ]; then
+    for b in ${@:2}; do
+      cd $HOME
+      mkdir .aurtool
+      cd .aurtool
+      git clone http://aur.archlinux.org/$b.git
+      cd $b
+      PKGB=./PKGBUILD
+      if [ ! -f $PKGB ]; then
+        ctext red std "Error: package does not exist by the name $b!"
+        ctext magenta std "Aborting"
+        cd $HOME
+        exit 6
+      fi
+      #
+      # Yes, this is a pointless function that uses up 3 lines unnecessarily. The script didn't behave properly without it. Bash has moods, and Brian Fox hates us all.
+      #
+      PKGBUILD() {
+      if DEFINVERT="1" isyes "$(ctext yellow nnl "Would you like to edit the PKGBUILD? (y/N)")"; then
+        if which nano &> /dev/null; then
+          nano ./PKGBUILD
+        else
+          if which vim &> /dev/null; then
+            vim ./PKGBUILD
+          else
+            ctext magenta std "No suitable text editor found!"
+            ctext yellow nnl "If one is present on the system, enter its command now (eg: nano, vim, emacs, etc). Otherwise leave blank to skip PKGBUILD editing: "
+            read PKGEDIT
+            if [ -z "$PKGEDIT" ]; then
+              PKGEDIT="NULL"
+            fi
+            if [ -v $PKGEDIT ]; then
+              $PKGEDIT ./PKGBUILD
+            fi
+          fi
+        fi
+      fi
+      }
+      PKGBUILD
+      unset makedepends
+      unset optdepends
+      unset depends
+      source ./PKGBUILD
+      declare -a uDEPS
+      for i in ${makedepends[@]}; do
+        uDEPS+=(
+              "$i"
+        )
+      done
+      for i in ${depends[@]}; do
+        uDEPS+=(
+              "$i"
+        )
+      done
+      if [ -z "$INSTALLOPT" ]; then
+        INSTALLOPT="0"
+      fi
+      if [ $INSTALLOPT = 1 ]; then
+        for i in ${optdepends[@]}; do
+          uDEPS+=(
+                "$i"
+          )
+        done
+      fi
+      declare -a DEPS
+      for i in ${uDEPS[@]}; do
+        i=${i%=*}
+        i=${i%>*}
+        i=${i%<*}
+        DEPS+=(
+             "$i"
+        )
+      done
+      for i in ${DEPS[@]}; do
+        if ! pacman -Ql $i &> /dev/null; then
+          ctext yellow std "Trying to install $i with pacman (dependency)"
+          if ! sudo pacman -S --noconfirm --needed $i; then
+            ctext magenta std "Installing $i with pacman failed"
+            ctext yellow std "Trying to install $i from AUR"
+            if ! NODEL="1" NCHECKALL="1" aurtool -SS $i; then
+              ctext red std "FATAL: Unable to install dependency $i!"
+              cd $HOME
+              exit 65
+            fi
+          fi
+        fi
+      done
+      if ! makepkg -csi; then
+        ctext red std "Error! Aborting"
+        cd $HOME
+        exit 131
+      fi
+      cd $HOME/.aurtool
+    done
+    if [ -z "$NODEL" ]; then
+      NODEL="0"
+    fi
+    if [ ! "$NODEL" = 1 ]; then
+      if isyes "$(ctext yellow nnl "Build files and / or built packages are stored in .aurtool in your home directory. Would you like to delete them? (Y/n)")"; then
+        echo "Cleaning up.."
+        cd $HOME
+        rm -rf $HOME/.aurtool
+      fi
+    fi
+  else
+    echo "Aborting"
+    cd $HOME
+    exit 125
+  fi
+fi
+
+if [ "$OP" = -Sy ]; then
+  UPD=$(package-query -A -u)
+  if [ -z "$UPD" ]; then
+    ctext yellow std "No AUR package updates available"
+    exit 0
+  else
+    echo " "
+    ctext blue std "$UPD"
+    echo " "
+  fi
+fi
+
+if [ "$OP" = -Syyu ]; then
+  UPD=$(package-query -A -u | grep -oP "aur/\K[^ ]*")
+  if [ -z "$UPD" ]; then
+    echo "There is nothing to do"
+    exit 0
+  fi
+  echo " "
+  for vV in $UPD; do
+    ctext blue nnl " $vV"
+  done
+  echo " "
+  echo " "
+  if isyes "$(ctext yellow nnl "Update these AUR packages? (Y/n)")"; then
+    for i in $UPD; do
+      NCHECKALL="1" aurtool -SS $i
+    done
+  else
+    echo "Aborting"
+    cd $HOME
+    exit 125
+  fi
+fi
+
+if [ "$OP" = -Syu ]; then
+  ctext yellow std "Updating non-AUR packages..."
+  sudo pacman -Syu
+  ctext yellow std "Updating AUR packages..."
+  aurtool -Syyu
+fi
+
+if [ "$OP" = -S ]; then
+  OPERROR
+  echo " "
+  for dD in ${@:2}; do
+    ctext blue nnl " $dD"
+  done
+  echo " "
+  echo " "
+  if isyes "$(ctext yellow nnl "Install these packages? (Y/n)")"; then
+    for m in ${@:2}; do
+      ctext yellow std "Trying to install $m using pacman..."
+      if ! sudo pacman -S --needed --noconfirm $m; then
+        ctext magenta std "Installing $m using pacman failed!"
+        ctext yellow std "Trying to install $m using AUR..."
+        NCHECKALL="1" aurtool -SS $m
+      fi
+    done
+  else
+    echo "Aborting"
+    cd $HOME
+    exit 125
+  fi
+fi
+
+if [ "$OP" = -R ]; then
+  OPERROR
+  echo " "
+  for dD in ${@:2}; do
+    ctext blue nnl " $dD"
+  done
+  echo " "
+  echo " "
+  if isyes "$(ctext yellow nnl "Remove these packages? (Y/n)")"; then
+    for u in ${@:2}; do
+      sudo pacman -R --noconfirm $u
+    done
+  else
+    ctext magenta std "Aborting"
+    cd $HOME
+    exit 125
+  fi
+fi
+
+if [ "$OP" = --version ]; then
+  ctext yellow std "aurtool V2.0-alpha.1-zsh"
+fi
+
+if [ "$OP" = --help ]; then
+  ctext yellow std " --------------------------------------------------------------------------------------"
+  ctext yellow std "                     Aurtool - minimal AUR package management system (zsh version)     "
+  ctext yellow std " --------------------------------------------------------------------------------------"
+  ctext yellow std "  options:                                                                             "
+  ctext yellow std "  --------                                                                             "
+  ctext yellow std "  -S          -   install a package, trying pacman first, and AUR if pacman fails      "
+  ctext yellow std "  -SS         -   install an AUR package (or update a single AUR package).             "
+  ctext yellow std "  -Sy         -   check for updates to installed AUR packages                          "
+  ctext yellow std "  -Syu        -   install all available updates to both AUR and non-AUR packages       "
+  ctext yellow std "  -Syyu       -   install all available updates to AUR packages                        "
+  ctext yellow std "  -Ss         -   search both repositories and AUR for package by name                 "
+  ctext yellow std "  -Sss        -   search the AUR for a package by name                                 "
+  ctext yellow std "  -R          -   remove a package                                                     "
+  ctext yellow std "  --help      -   display this help dialog                                             "
+  ctext yellow std "  --flags     -   display flags that can be set when running aurtool                   "
+  ctext yellow std "  --version   -   display aurtool version info                                         "
+  ctext yellow std " --------------------------------------------------------------------------------------"
+fi
+
+if [ "$OP" = --flags ]; then
+  ctext yellow std "                                ----------------                                "
+  ctext yellow std "                                 launch options                                 "
+  ctext yellow std "                                ----------------                                "
+  ctext yellow std " NODEL      -   set to 1 to skip prompting to perform cleanup steps post-install"
+  ctext yellow std " INSTALLOPT -   set to 1 to install optional dependencies of packages           "
+  ctext yellow std " NCHECKALL  -   set to 1 to skip initial yes/no dialogue box when installing    "
+fi
+###
