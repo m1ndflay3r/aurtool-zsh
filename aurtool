@@ -149,7 +149,9 @@ if [ "$OP" = -SS ]; then
       NCHECKALL="0"
   fi
   if [ $GOAHEAD = "1" ]; then
+    IFS=$'\n'
     for b in ${@:2}; do
+      unset IFS
       cd $HOME
       mkdir .aurtool
       cd .aurtool
@@ -241,6 +243,7 @@ if [ "$OP" = -SS ]; then
         exit 131
       fi
       cd $HOME/.aurtool
+      IFS=$'\n'
     done
     if [ -z "$NODEL" ]; then
       NODEL="0"
