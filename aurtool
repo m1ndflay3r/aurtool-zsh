@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 #
-#  Aurtool V2.0-alpha.1-zsh
+#  Aurtool V2.0_alpha.2-zsh
 #
 #  Maintainer: Eris Nihila (M1ndFlay3r)
 #              sp0t1fyfr33tr1alabus3@outlook.com
@@ -44,6 +44,14 @@ fi
 GOAHEAD="0"
 if [ -z "$NCHECKALL" ]; then
   NCHECKALL="0"
+fi
+if [ -z "$quiet" ]; then
+  quiet=0
+  IDGAF=0
+elif [ $quiet = 1 ]; then
+  NCHECKALL="1"
+  IDGAF="1"
+  NODEL="1"
 fi
 ###
 
@@ -164,9 +172,6 @@ if [ "$OP" = -SS ]; then
         cd $HOME
         exit 6
       fi
-      #
-      # Yes, this is a pointless function that uses up 3 lines unnecessarily. The script didn't behave properly without it. Bash has moods, and Brian Fox hates us all.
-      #
       PKGBUILD() {
       if DEFINVERT="1" isyes "$(ctext yellow nnl "Would you like to edit the PKGBUILD? (y/N)")"; then
         if which nano &> /dev/null; then
@@ -188,7 +193,9 @@ if [ "$OP" = -SS ]; then
         fi
       fi
       }
-      PKGBUILD
+      if [ $IDGAF != 1 ]; then
+        PKGBUILD
+      fi
       unset makedepends
       unset optdepends
       unset depends
@@ -237,6 +244,9 @@ if [ "$OP" = -SS ]; then
           fi
         fi
       done
+      if [ $IDGAF = 1 ]; then
+        alias pacman="pacman --noconfirm"
+      fi
       if ! makepkg -csi; then
         ctext red std "Error! Aborting"
         cd $HOME
@@ -366,7 +376,7 @@ if [ "$OP" = -R ]; then
 fi
 
 if [ "$OP" = --version ]; then
-  ctext yellow std "aurtool V2.0-alpha.1-zsh"
+  ctext yellow std "aurtool-zsh V2.0_alpha.2"
 fi
 
 if [ "$OP" = --help ]; then
@@ -390,12 +400,13 @@ if [ "$OP" = --help ]; then
 fi
 
 if [ "$OP" = --flags ]; then
-  ctext yellow std "---------------------------------------------------------------------------------"
-  ctext yellow std "                                 launch options                                  "
-  ctext yellow std "---------------------------------------------------------------------------------"
-  ctext yellow std " NODEL      -   set to 1 to skip prompting to perform cleanup steps post-install "
-  ctext yellow std " INSTALLOPT -   set to 1 to install optional dependencies of packages            "
-  ctext yellow std " NCHECKALL  -   set to 1 to skip initial yes/no dialogue box when installing     "
-  ctext yellow std "---------------------------------------------------------------------------------"
+  ctext yellow std "--------------------------------------------------------------------------------------------"
+  ctext yellow std "                                        launch options                                      "
+  ctext yellow std "--------------------------------------------------------------------------------------------"
+  ctext yellow std " 1 - NODEL      -   set to 1 to skip prompting to perform cleanup steps post-install        "
+  ctext yellow std " 2 - INSTALLOPT -   set to 1 to install optional dependencies of packages                   "
+  ctext yellow std " 3 - NCHECKALL  -   set to 1 to skip initial yes/no dialogue box when installing            "
+  ctext yellow std " 4 - quiet      -   set to 1 to enable flags 1 and 3, as well as skipping PKGBUILD editing. "
+  ctext yellow std "--------------------------------------------------------------------------------------------"
 fi
 ###
