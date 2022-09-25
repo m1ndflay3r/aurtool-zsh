@@ -283,8 +283,8 @@ if [ "$OP" = -Sy ]; then
     ctext green std "No AUR package updates available"
     exit 0
   else
-    for 5G in $UPD; do
-      ctext blue std "$5G"
+    for KEK in $UPD; do
+      ctext blue std "$KEK"
     done
   fi
   echo " "
