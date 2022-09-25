@@ -260,21 +260,40 @@ if [ "$OP" = -SS ]; then
 fi
 
 if [ "$OP" = -Sy ]; then
+  sudo pacman -Sy
+  ctext yellow std "---------"
+  ctext yellow std " Non-AUR "
+  ctext yellow std "---------"
+  echo " "
+  NAUPD=$(sudo pacman -Qu)
+  if [ -z "$NAUPD" ]; then
+    ctext green std "No non-AUR package updates available"
+  else
+    for brug in $NAUPD; do
+      ctext blue std "$brug"
+    done
+  fi
+  echo " "
+  ctext yellow std "---------"
+  ctext yellow std "   AUR   "
+  ctext yellow std "---------"
+  echo " "
   UPD=$(package-query -A -u)
   if [ -z "$UPD" ]; then
-    ctext yellow std "No AUR package updates available"
+    ctext green std "No AUR package updates available"
     exit 0
   else
-    echo " "
-    ctext blue std "$UPD"
-    echo " "
+    for 5G in $UPD; do
+      ctext blue std "$5G"
+    done
   fi
+  echo " "
 fi
 
 if [ "$OP" = -Syyu ]; then
   UPD=$(package-query -A -u | grep -oP "aur/\K[^ ]*")
   if [ -z "$UPD" ]; then
-    echo "There is nothing to do"
+    ctext green std "No AUR package updates available"
     exit 0
   fi
   echo " "
@@ -356,7 +375,7 @@ if [ "$OP" = --help ]; then
   ctext yellow std "  --------                                                                             "
   ctext yellow std "  -S          -   install a package, trying pacman first, and AUR if pacman fails      "
   ctext yellow std "  -SS         -   install an AUR package (or update a single AUR package).             "
-  ctext yellow std "  -Sy         -   check for updates to installed AUR packages                          "
+  ctext yellow std "  -Sy         -   check for available updates to installed Pacman and AUR packages     "
   ctext yellow std "  -Syu        -   install all available updates to both AUR and non-AUR packages       "
   ctext yellow std "  -Syyu       -   install all available updates to AUR packages                        "
   ctext yellow std "  -Ss         -   search both repositories and AUR for package by name                 "
@@ -369,11 +388,12 @@ if [ "$OP" = --help ]; then
 fi
 
 if [ "$OP" = --flags ]; then
-  ctext yellow std "                                ----------------                                "
-  ctext yellow std "                                 launch options                                 "
-  ctext yellow std "                                ----------------                                "
-  ctext yellow std " NODEL      -   set to 1 to skip prompting to perform cleanup steps post-install"
-  ctext yellow std " INSTALLOPT -   set to 1 to install optional dependencies of packages           "
-  ctext yellow std " NCHECKALL  -   set to 1 to skip initial yes/no dialogue box when installing    "
+  ctext yellow std "---------------------------------------------------------------------------------"
+  ctext yellow std "                                 launch options                                  "
+  ctext yellow std "---------------------------------------------------------------------------------"
+  ctext yellow std " NODEL      -   set to 1 to skip prompting to perform cleanup steps post-install "
+  ctext yellow std " INSTALLOPT -   set to 1 to install optional dependencies of packages            "
+  ctext yellow std " NCHECKALL  -   set to 1 to skip initial yes/no dialogue box when installing     "
+  ctext yellow std "---------------------------------------------------------------------------------"
 fi
 ###

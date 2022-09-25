@@ -67,19 +67,19 @@ That being said, the bash version of aurtool is considered deprecated (due to ba
 - ``` aurtool -R packagename ```
 
 
-- ***-Sy*** : check for updates to installed AUR packages.
+- ***-Sy*** : check for updates to installed Pacman and AUR packages.
 
 - ``` aurtool -Sy ```
 
 
 - ***-Syu*** : check for updates to both AUR + repository packages and install any that are available
 
-- ``` aurtool -Syyu ```
+- ``` aurtool -Syu ```
 
 
 - ***-Syyu*** : check for updates to AUR packages and install any that are available
 
-- ``` aurtool -Syu ```
+- ``` aurtool -Syyu ```
 
 
 - ***--help*** : show help information
@@ -89,7 +89,7 @@ That being said, the bash version of aurtool is considered deprecated (due to ba
 
 - ***--flags*** : show runtime flags
 
-- ``` aurtool --help ```
+- ``` aurtool --flags ```
 
 
 - ***--version*** : show versioninfo
