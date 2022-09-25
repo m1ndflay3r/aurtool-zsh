@@ -150,7 +150,7 @@ if [ "$OP" = -SS ]; then
   fi
   if [ $GOAHEAD = "1" ]; then
     declare -a LINEPUN
-    LINEPUN=("${@:2}")
+    LINEPUN=($={@:2})
     for b in ${LINEPUN[@]}; do
       cd $HOME
       mkdir .aurtool
@@ -243,7 +243,6 @@ if [ "$OP" = -SS ]; then
         exit 131
       fi
       cd $HOME/.aurtool
-      IFS=$'\n'
     done
     if [ -z "$NODEL" ]; then
       NODEL="0"
