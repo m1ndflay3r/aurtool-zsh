@@ -13,7 +13,7 @@ To install aurtool to system, it is highly recommended to use either the aurtool
 The bash version of aurtool is much more stable (read: well-tested and not-scary) at the moment as moving over to zsh is still in its very early stages.
 
 
-That being said, the bash version of aurtool is considered deprecated (due to bash sucking very, very hard compared to zshell) and support will be dropped in the near future. Do with that what you will.
+That being said, the bash version is considered deprecated (due to bash sucking very, very hard compared to zshell) and support will be dropped in the near future. Do with that what you will.
 
 
 
