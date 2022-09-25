@@ -369,7 +369,7 @@ fi
 
 if [ "$OP" = --help ]; then
   ctext yellow std " --------------------------------------------------------------------------------------"
-  ctext yellow std "                     Aurtool - minimal AUR package management system (zsh version)     "
+  ctext yellow std "                 Aurtool - lightweight AUR package management system (zsh version)     "
   ctext yellow std " --------------------------------------------------------------------------------------"
   ctext yellow std "  options:                                                                             "
   ctext yellow std "  --------                                                                             "
