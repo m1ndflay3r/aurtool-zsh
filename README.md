@@ -42,12 +42,12 @@ That being said, the bash version of aurtool is considered deprecated (due to ba
 
 <h4>Usage:</h4>
 
-- ***-S*** : install a package, trying pacman first, and AUR if pacman fails.
+- ***-S*** : install package(s), trying pacman first, and AUR if pacman fails.
 
 - ``` aurtool -S packagename ```
 
 
-- ***-SS*** : install package(s) from AUR by-name.
+- ***-SS*** : install package(s) from AUR only.
 
 - ``` aurtool -SS packagename ```
 
