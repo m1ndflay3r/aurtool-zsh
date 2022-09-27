@@ -123,7 +123,7 @@ extractdeps() {
     EXTDAT=0
     FIRSTLINE=0
     IFS=$'\n'
-    for i in $=zPKGBUILD; do
+    for i in ${zPKGBUILD[@]}; do
       if [ $OP = makedeps ]; then
         TESTONE="${i:0:13}"
       elif [ $OP = optdeps ]; then
@@ -142,13 +142,13 @@ extractdeps() {
         TESTTWO="${i:0:1}"
         if [[ "$TESTTWO" != "$SECONDMATCH" ]]; then
           if [ $FIRSTLINE = 1 ]; then
-            echo $i
+            echo "$FIRSTMATCH"
             FIRSTLINE=0
           elif [ $FIRSTLINE = 0 ]; then
             echo "  $i"
           fi
         else
-          echo $i
+          echo "$SECONDMATCH"
           EXTDAT=0
         fi
       fi
@@ -157,12 +157,17 @@ extractdeps() {
     tput sgr 0
   }
   echo '#!/usr/bin/env zsh' > ./depends.zsh
-  echo " " >> ./depends.zsh
-  GETDEPS deps >> ./depends.zsh
-  echo " " >> ./depends.zsh
-  GETDEPS makedeps >> ./depends.zsh
-  echo " " >> ./depends.zsh
-  if [ $INSTALLOPT = 1 ]; then
-    GETDEPS optdeps >> ./depends.zsh
-  fi
+  echo "" >> ./depends.zsh
+  GETDEPS deps &> ./zdepends.zsh
+  head -n -1 ./zdepends.zsh >> ./depends.zsh
+  echo "" >> ./depends.zsh
+  GETDEPS makedeps &> ./zmakedepends.zsh
+  head -n -1 ./zmakedepends.zsh >> ./depends.zsh
+  echo "" >> ./depends.zsh
+  GETDEPS optdeps &> ./zoptdepends.zsh
+  head -n -1 ./zoptdepends.zsh >> ./depends.zsh
+  rm -rf ./zoptdepends.zsh
+  rm -rf ./zmakedepends.zsh
+  rm -rf ./zdepends.zsh
 }
+
