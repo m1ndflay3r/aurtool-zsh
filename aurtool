@@ -45,6 +45,9 @@ GOAHEAD="0"
 if [ -z "$NCHECKALL" ]; then
   NCHECKALL="0"
 fi
+if [ -z "$INSTALLOPT" ]; then
+  INSTALLOPT="0"
+fi
 if [ -z "$quiet" ]; then
   quiet=0
   IDGAF=0
