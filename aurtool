@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 #
-#  Aurtool V2.0_alpha.6-zsh
+#  Aurtool V2.0_alpha.7-zsh
 #
 #  Maintainer: Eris Nihila (M1ndFlay3r)
 #              sp0t1fyfr33tr1alabus3@outlook.com
@@ -87,12 +87,12 @@ if [ ! -z "$OP" ]; then
     ctext red nnl "Error: "
     ctext magenta nnl "$1"
     ctext red std ": Invalid command!"
-    ctext yellow std "Do aurtool --help for help page"
+    ctext yellow std,bold "Do aurtool --help for help page"
     exit 22
   fi
 else
   ctext red std "Error: aurtool requires input!"
-  ctext yellow std "Do aurtool --help for help page"
+  ctext yellow std,bold "Do aurtool --help for help page"
   exit 22
 fi
 
@@ -115,7 +115,7 @@ fi
 OPERROR() {
   if [ -z "$OPINPUT" ]; then
     ctext red std "Error: $OP requires additional input."
-    ctext yellow std "Do aurtool --help for help page"
+    ctext yellow std,bold "Do aurtool --help for help page"
     exit 22
   fi
 }
@@ -131,13 +131,13 @@ fi
 
 if [ "$OP" = -Ss ]; then
   OPERROR
-  ctext yellow std "---------"
-  ctext yellow std " Non-AUR "
-  ctext yellow std "---------"
+  ctext white std " ---------"
+  ctext blue std,bold "  Non-AUR "
+  ctext white std " ---------"
   pacsearch ${@:2}
-  ctext yellow std "---------"
-  ctext yellow std "   AUR   "
-  ctext yellow std "---------"
+  ctext white std " ---------"
+  ctext blue std,bold "    AUR   "
+  ctext white std " ---------"
   package-query -A -s ${@:2}
 fi
 
@@ -166,7 +166,7 @@ if [ "$OP" = -SS ]; then
     LINEPUN=($(echo ${@:2}))
     for b in $=LINEPUN; do
       cd $HOME
-      mkdir .aurtool
+      mkdir .aurtool &> /dev/null
       cd .aurtool
       git clone http://aur.archlinux.org/$b.git
       cd $b
@@ -207,12 +207,12 @@ if [ "$OP" = -SS ]; then
       extractdeps
       source ./depends.zsh
       declare -a uDEPS
-      for i in $=makedepends; do
+      for i in ${makedepends[@]}; do
         uDEPS+=(
               "$i"
         )
       done
-      for i in $=depends; do
+      for i in ${depends[@]}; do
         uDEPS+=(
               "$i"
         )
@@ -221,7 +221,8 @@ if [ "$OP" = -SS ]; then
         INSTALLOPT="0"
       fi
       if [ $INSTALLOPT = 1 ]; then
-        for i in $=optdepends; do
+        for i in ${optdepends[@]}; do
+          i=${i%:*}
           uDEPS+=(
                 "$i"
           )
@@ -272,7 +273,7 @@ if [ "$OP" = -SS ]; then
       NODEL="0"
     fi
     if [ ! "$NODEL" = 1 ]; then
-      if isyes "$(ctext yellow nnl "Build files and / or built packages are stored in .aurtool in your home directory. Would you like to delete them? (Y/n)")"; then
+      if isyes "$(ctext yellow nnl,bold "Build files and / or built packages are stored in .aurtool in your home directory. Would you like to delete them? (Y/n)")"; then
         echo "Cleaning up.."
         cd $HOME
         rm -rf $HOME/.aurtool
@@ -287,9 +288,9 @@ fi
 
 if [ "$OP" = -Sy ]; then
   sudo pacman -Sy
-  ctext yellow std "---------"
-  ctext yellow std " Non-AUR "
-  ctext yellow std "---------"
+  ctext white std " ---------"
+  ctext blue std,bold "  Non-AUR "
+  ctext white std " ---------"
   echo " "
   NAUPD=$(sudo pacman -Qu)
   if [ -z "$NAUPD" ]; then
@@ -300,9 +301,9 @@ if [ "$OP" = -Sy ]; then
     done
   fi
   echo " "
-  ctext yellow std "---------"
-  ctext yellow std "   AUR   "
-  ctext yellow std "---------"
+  ctext white std " ---------"
+  ctext blue std,bold "    AUR   "
+  ctext white std " ---------"
   echo " "
   UPD=$(package-query -A -u)
   if [ -z "$UPD" ]; then
@@ -329,7 +330,7 @@ if [ "$OP" = -Syyu ]; then
   done
   echo " "
   echo " "
-  if isyes "$(ctext yellow nnl "Update these AUR packages? (Y/n)")"; then
+  if isyes "$(ctext yellow nnl,bold "Update these AUR packages? (Y/n)")"; then
     for i in $=UPD; do
       if [ $quiet = 1 ]; then
         quiet="1" NCHECKALL="1" aurtool -SS $i
@@ -359,7 +360,7 @@ if [ "$OP" = -S ]; then
   done
   echo " "
   echo " "
-  if isyes "$(ctext yellow nnl "Install these packages? (Y/n)")"; then
+  if isyes "$(ctext yellow nnl,bold "Install these packages? (Y/n)")"; then
     declare -a ANOTHERLINEPUN
     ANOTHERLINEPUN=($(echo ${@:2}))
     for m in $=ANOTHERLINEPUN; do
@@ -389,7 +390,7 @@ if [ "$OP" = -R ]; then
   done
   echo " "
   echo " "
-  if isyes "$(ctext yellow nnl "Remove these packages? (Y/n)")"; then
+  if isyes "$(ctext yellow nnl,bold "Remove these packages? (Y/n)")"; then
     declare -a ANOTHERANOTHERLINEPUN
     ANOTHERANOTHERLINEPUN=($(echo ${@:2}))
     for u in $=ANOTHERANOTHERLINEPUN; do
@@ -407,28 +408,28 @@ if [ "$OP" = --get-deps ]; then
   dLINEPUN=($(echo ${@:2}))
   for b in $=dLINEPUN; do
     cd $HOME
-    mkdir .aurtool
+    mkdir .aurtool &> /dev/null
     cd .aurtool
     git clone http://aur.archlinux.org/$b.git
     cd $b
     extractdeps
     source ./depends.zsh
-    ctext yellow std "---------"
-    ctext yellow std " depends "
-    ctext yellow std "---------"
-    for i in $=depends; do
-      ctext blue nnl "$i "
+    ctext white std " ---------"
+    ctext blue std,bold "  depends "
+    ctext white std " ---------"
+    for i in ${depends[@]}; do
+      ctext blue nnl "  $i "
       if pacman -Ql "$i" &> /dev/null; then
         ctext green chkmrk
       else
         ctext red xmrk
       fi
     done
-    ctext yellow std "-------------"
-    ctext yellow std " makedepends "
-    ctext yellow std "-------------"
-    for i in $=makedepends; do
-      ctext blue nnl "$i "
+    ctext white std " -------------"
+    ctext blue std,bold "  makedepends "
+    ctext white std " -------------"
+    for i in ${makedepends[@]}; do
+      ctext blue nnl "  $i "
       if pacman -Ql $i &> /dev/null; then
         ctext green chkmrk
       else
@@ -436,11 +437,12 @@ if [ "$OP" = --get-deps ]; then
       fi
     done
     if [ $INSTALLOPT = "1" ]; then
-      ctext yellow std "------------"
-      ctext yellow std " optdepends "
-      ctext yellow std "------------"
-      for i in $=optdepends; do
-        ctext blue nnl "$i "
+      ctext white std " ------------"
+      ctext blue std,bold "  optdepends "
+      ctext white std " ------------"
+      for i in ${optdepends[@]}; do
+        i=${i%:*}
+        ctext blue nnl "  $i "
         if pacman -Ql $i &> /dev/null; then
           ctext green chkmrk
         else
@@ -454,7 +456,7 @@ if [ "$OP" = --get-deps ]; then
 fi
 
 if [ "$OP" = --version ]; then
-  ctext yellow std "aurtool-zsh V2.0_alpha.6"
+  ctext cyan std "aurtool-zsh V2.0_alpha.7"
 fi
 
 if [ "$OP" = --help ]; then

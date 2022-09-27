@@ -224,23 +224,7 @@ extractdeps() {
             FIRSTLINE=0
             SECLINE=1
           elif [ $FIRSTLINE = 0 ]; then
-            if [ $OP = optdeps ] && [ $SECLINE = 1 ]; then
-              SECLINE=0
-              TESTTHREE=':'
-              THIRDMATCH=${${:-i}[-1]}
-              if [[ "$TESTTHREE" = "$SECONDMATCH" ]]; then
-                OPTDEPISFUCKY=1
-              fi
-            fi
-            if [ $OPTDEPISFUCKY = 1 ]; then
-              TESTTHREE=':'
-              THIRDMATCH=${${:-i}[-1]}
-              if [[ "$TESTTHREE" = "$THIRDMATCH" ]]; then
-                echo "  ${i::-1}"
-              fi
-            else
-              echo "  $i"
-            fi
+            echo "  $i"
           fi
         else
           echo "$SECONDMATCH"
