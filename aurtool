@@ -123,9 +123,6 @@ OPERROR() {
 
 
 ### Script functionality begins here.
-### Yes, I wrote the functions as if statements.
-### No, it does not have any effects on functionality.
-### No, I don't know why I did that. I was high. Get off my back.
 ###
 if [ "$OP" = -Sss ]; then
   OPERROR
@@ -420,7 +417,7 @@ if [ "$OP" = --get-deps ]; then
     ctext yellow std " depends "
     ctext yellow std "---------"
     for i in $=depends; do
-      ctext blue nnl "$i"
+      ctext blue nnl "$i "
       if pacman -Ql "$i" &> /dev/null; then
         ctext green chkmrk
       else
@@ -431,7 +428,7 @@ if [ "$OP" = --get-deps ]; then
     ctext yellow std " makedepends "
     ctext yellow std "-------------"
     for i in $=makedepends; do
-      ctext blue nnl "$i"
+      ctext blue nnl "$i "
       if pacman -Ql $i &> /dev/null; then
         ctext green chkmrk
       else
@@ -443,7 +440,7 @@ if [ "$OP" = --get-deps ]; then
       ctext yellow std " optdepends "
       ctext yellow std "------------"
       for i in $=optdepends; do
-        ctext blue nnl "$i"
+        ctext blue nnl "$i "
         if pacman -Ql $i &> /dev/null; then
           ctext green chkmrk
         else
