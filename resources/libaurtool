@@ -63,10 +63,46 @@ ctext() {
     echo -n "${@:3}"
     tput sgr 0
   fi
+  if [ "$2" = std,bold ]; then
+    tput bold
+    echo "${@:3}"
+    tput sgr 0
+  fi
+  if [ "$2" = nnl,bold ]; then
+    tput bold
+    echo -n "${@:3}"
+    tput sgr 0
+  fi
+  if [ "$2" = std,dim ]; then
+    tput dim
+    echo "${@:3}"
+    tput sgr 0
+  fi
+  if [ "$2" = nnl,dim ]; then
+    tput dim
+    echo -n "${@:3}"
+    tput sgr 0
+  fi
   if [ "$2" = std,nres ]; then
     echo "${@:3}"
   fi
   if [ "$2" = nnl,nres ]; then
+    echo -n "${@:3}"
+  fi
+  if [ "$2" = std,bold,nres ]; then
+    tput bold
+    echo "${@:3}"
+  fi
+  if [ "$2" = nnl,bold,nres ]; then
+    tput bold
+    echo -n "${@:3}"
+  fi
+  if [ "$2" = std,dim,nres ]; then
+    tput dim
+    echo "${@:3}"
+  fi
+  if [ "$2" = nnl,dim,nres ]; then
+    tput dim
     echo -n "${@:3}"
   fi
   # special characters

@@ -461,9 +461,9 @@ if [ "$OP" = --version ]; then
 fi
 
 if [ "$OP" = --help ]; then
-  ctext yellow std " --------------------------------------------------------------------------------------"
-  ctext yellow std "                 Aurtool - lightweight AUR package management system (zsh version)     "
-  ctext yellow std " --------------------------------------------------------------------------------------"
+  ctext yellow std,bold " --------------------------------------------------------------------------------------"
+  ctext yellow std,bold "                 Aurtool - lightweight AUR package management system (zsh version)     "
+  ctext yellow std,bold " --------------------------------------------------------------------------------------"
   ctext yellow std "  options:                                                                             "
   ctext yellow std "  --------                                                                             "
   ctext yellow std "  -S          -   install a package, trying pacman first, and AUR if pacman fails      "
