@@ -158,12 +158,11 @@ extractdeps() {
   }
   echo '#!/usr/bin/env zsh' > ./depends.zsh
   echo " " >> ./depends.zsh
-  echo 'declare -a depends' >> ./depends.zsh
   GETDEPS deps >> ./depends.zsh
   echo " " >> ./depends.zsh
-  echo 'declare -a makedepends' >> ./depends.zsh
   GETDEPS makedeps >> ./depends.zsh
   echo " " >> ./depends.zsh
-  echo 'declare -a optdepends' >> ./depends.zsh
-  GETDEPS optdeps >> ./depends.zsh
+  if [ $INSTALLOPT = 1 ]; then
+    GETDEPS optdeps >> ./depends.zsh
+  fi
 }

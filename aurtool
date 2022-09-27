@@ -203,7 +203,11 @@ if [ "$OP" = -SS ]; then
       unset makedepends
       unset optdepends
       unset depends
-      extractdeps
+      if [ $INSTALLOPT = 1 ]; then
+        INSTALLOPT="1" extractdeps
+      else
+        extractdeps
+      fi
       source ./depends.zsh
       declare -a uDEPS
       for i in $=makedepends; do
