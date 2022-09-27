@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 #
-#  Aurtool V2.0_alpha.5-zsh
+#  Aurtool V2.0_alpha.6-zsh
 #
 #  Maintainer: Eris Nihila (M1ndFlay3r)
 #              sp0t1fyfr33tr1alabus3@outlook.com
@@ -454,7 +454,7 @@ if [ "$OP" = --get-deps ]; then
 fi
 
 if [ "$OP" = --version ]; then
-  ctext yellow std "aurtool-zsh V2.0_alpha.5"
+  ctext yellow std "aurtool-zsh V2.0_alpha.6"
 fi
 
 if [ "$OP" = --help ]; then
