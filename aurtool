@@ -428,24 +428,26 @@ if [ "$OP" = --get-deps ]; then
     ctext yellow std " makedepends "
     ctext yellow std "-------------"
     for i in $=makedepends; do
-      ctext blue std "$i"
+      ctext blue nnl "$i"
       if pacman -Ql $i &> /dev/null; then
         ctext green chkmrk
       else
         ctext red xmrk
       fi
     done
-    ctext yellow std "------------"
-    ctext yellow std " optdepends "
-    ctext yellow std "------------"
-    for i in $=optdepends; do
-      ctext blue std "$i"
-      if pacman -Ql $i &> /dev/null; then
-        ctext green chkmrk
-      else
-        ctext red xmrk
-      fi
-    done
+    if INSTALLOPT="1"; then
+      ctext yellow std "------------"
+      ctext yellow std " optdepends "
+      ctext yellow std "------------"
+      for i in $=optdepends; do
+        ctext blue nnl "$i"
+        if pacman -Ql $i &> /dev/null; then
+          ctext green chkmrk
+        else
+          ctext red xmrk
+        fi
+      done
+    fi
     cd $HOME
     rm -rf ./.aurtool/$b
   done
@@ -481,7 +483,7 @@ if [ "$OP" = --flags ]; then
   ctext yellow std "                                        launch options                                      "
   ctext yellow std "--------------------------------------------------------------------------------------------"
   ctext yellow std " 1 - NODEL      -   set to 1 to skip prompting to perform cleanup steps post-install        "
-  ctext yellow std " 2 - INSTALLOPT -   set to 1 to install optional dependencies of packages                   "
+  ctext yellow std " 2 - INSTALLOPT -   set to 1 to install optional deps of packages (also affects --get-deps) "
   ctext yellow std " 3 - NCHECKALL  -   set to 1 to skip initial yes/no dialogue box when installing            "
   ctext yellow std " 4 - quiet      -   set to 1 to enable flags 1 and 3, as well as skipping PKGBUILD editing. "
   ctext yellow std "--------------------------------------------------------------------------------------------"
