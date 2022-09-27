@@ -402,7 +402,7 @@ if [ "$OP" = -R ]; then
 fi
 
 if [ "$OP" = --version ]; then
-  ctext yellow std "aurtool-zsh V2.0_alpha.3"
+  ctext yellow std "aurtool-zsh V2.0_alpha.4"
 fi
 
 if [ "$OP" = --help ]; then
