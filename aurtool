@@ -435,7 +435,7 @@ if [ "$OP" = --get-deps ]; then
         ctext red xmrk
       fi
     done
-    if INSTALLOPT="1"; then
+    if $INSTALLOPT="1"; then
       ctext yellow std "------------"
       ctext yellow std " optdepends "
       ctext yellow std "------------"
