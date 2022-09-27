@@ -103,3 +103,67 @@ isvalidoperation() {
     fi
   done
 }
+
+extractdeps() {
+  GETDEPS() {
+    OP="$@[1]"
+    if [ $OP = makedeps ]; then
+      FIRSTMATCH='makedepends=('
+    elif [ $OP = deps ]; then
+      FIRSTMATCH='depends=('
+    elif [ $OP = optdeps ]; then
+      FIRSTMATCH='optdepends=('
+    else
+      echo "Invalid option"
+      exit 1
+    fi
+    SECONDMATCH=')'
+    declare -a zPKGBUILD
+    zPKGBUILD=($(cat ./PKGBUILD))
+    EXTDAT=0
+    FIRSTLINE=0
+    IFS=$'\n'
+    for i in $=zPKGBUILD; do
+      if [ $OP = makedeps ]; then
+        TESTONE="${i:0:13}"
+      elif [ $OP = optdeps ]; then
+        TESTONE="${i:0:12}"
+      elif [ $OP = deps ]; then
+        TESTONE="${i:0:9}"
+      fi
+      if [ -z "$TESTONE" ]; then
+        TESTONE=NULL
+      fi
+      if [[ $TESTONE = $FIRSTMATCH ]]; then
+        EXTDAT=1
+        FIRSTLINE=1
+      fi
+      if [ "$EXTDAT" = 1 ]; then
+        TESTTWO="${i:0:1}"
+        if [[ "$TESTTWO" != "$SECONDMATCH" ]]; then
+          if [ $FIRSTLINE = 1 ]; then
+            echo $i
+            FIRSTLINE=0
+          elif [ $FIRSTLINE = 0 ]; then
+            echo "  $i"
+          fi
+        else
+          echo $i
+          EXTDAT=0
+        fi
+      fi
+    done
+    unset IFS
+    tput sgr 0
+  }
+  echo '#!/usr/bin/env zsh' > ./depends.zsh
+  echo " " >> ./depends.zsh
+  echo 'declare -a depends' >> ./depends.zsh
+  GETDEPS deps >> ./depends.zsh
+  echo " " >> ./depends.zsh
+  echo 'declare -a makedepends' >> ./depends.zsh
+  GETDEPS makedeps >> ./depends.zsh
+  echo " " >> ./depends.zsh
+  echo 'declare -a optdepends' >> ./depends.zsh
+  GETDEPS optdeps >> ./depends.zsh
+}
