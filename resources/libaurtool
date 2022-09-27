@@ -69,6 +69,47 @@ ctext() {
   if [ "$2" = nnl,nres ]; then
     echo -n "${@:3}"
   fi
+  # special characters
+  if [ "$2" = chkmrk ]; then
+    tput bold
+    echo -e "\xE2\x9C\x94"
+    tput sgr 0
+  fi
+  if [ "$2" = xmrk ]; then
+    tput bold
+    echo "X"
+    tput sgr 0
+  fi
+  if [ "$2" = grin ]; then
+    tput bold
+    echo "😀"
+    tput sgr 0
+  fi
+  if [ "$2" = smile ]; then
+    tput bold
+    echo "☺"
+    tput sgr 0
+  fi
+  if [ "$2" = glss ]; then
+    tput bold
+    echo "😎"
+    tput sgr 0
+  fi
+  if [ "$2" = frown ]; then
+    tput bold
+    echo "☹"
+    tput sgr 0
+  fi
+  if [ "$2" = horrif ]; then
+    tput bold
+    echo "😱"
+    tput sgr 0
+  fi
+  if [ "$2" = dead ]; then
+    tput bold
+    echo "☠"
+    tput sgr 0
+  fi
 }
 
 isyes() {

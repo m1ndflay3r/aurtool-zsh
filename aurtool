@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 #
-#  Aurtool V2.0_alpha.4-zsh
+#  Aurtool V2.0_alpha.5-zsh
 #
 #  Maintainer: Eris Nihila (M1ndFlay3r)
 #              sp0t1fyfr33tr1alabus3@outlook.com
@@ -76,6 +76,7 @@ VALID+=(
     "-SS"
     "-R"
     "--flags"
+    "--get-deps"
 )
 
 if [ ! -z "$OP" ]; then
@@ -401,8 +402,57 @@ if [ "$OP" = -R ]; then
   fi
 fi
 
+if [ "$OP" = --get-deps ]; then
+  declare -a dLINEPUN
+  dLINEPUN=($(echo ${@:2}))
+  for b in $=dLINEPUN; do
+    cd $HOME
+    mkdir .aurtool
+    cd .aurtool
+    git clone http://aur.archlinux.org/$b.git
+    cd $b
+    extractdeps
+    source ./depends.zsh
+    ctext yellow std "---------"
+    ctext yellow std " depends "
+    ctext yellow std "---------"
+    for i in $=depends; do
+      ctext blue nnl "$i"
+      if pacman -Ql "$i" &> /dev/null; then
+        ctext green chkmrk
+      else
+        ctext red xmrk
+      fi
+    done
+    ctext yellow std "-------------"
+    ctext yellow std " makedepends "
+    ctext yellow std "-------------"
+    for i in $=makedepends; do
+      ctext blue std "$i"
+      if pacman -Ql $i &> /dev/null; then
+        ctext green chkmrk
+      else
+        ctext red xmrk
+      fi
+    done
+    ctext yellow std "------------"
+    ctext yellow std " optdepends "
+    ctext yellow std "------------"
+    for i in $=optdepends; do
+      ctext blue std "$i"
+      if pacman -Ql $i &> /dev/null; then
+        ctext green chkmrk
+      else
+        ctext red xmrk
+      fi
+    done
+    cd $HOME
+    rm -rf ./.aurtool/$b
+  done
+fi
+
 if [ "$OP" = --version ]; then
-  ctext yellow std "aurtool-zsh V2.0_alpha.4"
+  ctext yellow std "aurtool-zsh V2.0_alpha.5"
 fi
 
 if [ "$OP" = --help ]; then
@@ -419,6 +469,7 @@ if [ "$OP" = --help ]; then
   ctext yellow std "  -Ss         -   search both repositories and AUR for package by name                 "
   ctext yellow std "  -Sss        -   search the AUR for a package by name                                 "
   ctext yellow std "  -R          -   remove a package                                                     "
+  ctext yellow std "  --get-deps  -   show dependencies of an aur package, and whether they're installed   "
   ctext yellow std "  --help      -   display this help dialog                                             "
   ctext yellow std "  --flags     -   display flags that can be set when running aurtool                   "
   ctext yellow std "  --version   -   display aurtool version info                                         "

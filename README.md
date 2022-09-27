@@ -82,6 +82,11 @@ That being said, the bash version is considered deprecated (due to bash sucking 
 - ``` aurtool -Syyu ```
 
 
+- ***--get-deps*** : show dependencies of an aur package
+
+- ``` aurtool --get-deps ```
+
+
 - ***--help*** : show help information
 
 - ``` aurtool --help ```
